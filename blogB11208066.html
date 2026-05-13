@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>從古人朝聖到 AI 導遊：旅遊景點的進化論</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            900: '#0c4a6e',
+                        },
+                        accent: {
+                            gold: '#D4AF37',
+                            slate: '#1e293b',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Noto Sans TC', 'sans-serif'],
+                        display: ['Outfit', 'Noto Sans TC', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #020617;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-mask {
+            mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+        }
+        ::selection {
+            background: #0ea5e9;
+            color: white;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased">
+
+    <!-- Hero Section -->
+    <header class="relative h-[80vh] flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-slate-950/50 to-slate-950 z-10"></div>
+            <div class="w-full h-full object-cover hero-mask opacity-60 scale-105 transform hover:scale-110 transition-transform duration-1000">
+                <img src='https://opal.google/board/blobs/5f1c55bf-0414-41e4-b163-aaa5ec3c09bb' alt='Evolution of Travel Banner' class="w-full h-full object-cover" />
+            </div>
+        </div>
+
+        <div class="relative z-20 max-w-5xl px-6 text-center animate-fade-in-up">
+            <div class="inline-block px-4 py-1.5 mb-6 text-sm font-semibold tracking-widest uppercase border border-brand-500/30 bg-brand-500/10 text-brand-500 rounded-full">
+                B11208066 • 深度專題
+            </div>
+            <h1 class="text-4xl md:text-7xl font-black font-display leading-tight mb-8">
+                從古人朝聖到 AI 導遊：<br/>
+                <span class="gradient-text">旅遊景點的進化論</span>
+            </h1>
+            <p class="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed">
+                一場跨越千年的旅程，探討我們為何出發，又將去向何方。
+            </p>
+        </div>
+        
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-float">
+            <svg class="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+            </svg>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-6 py-20">
+        
+        <!-- Opening -->
+        <section class="mb-24 opacity-0 animate-fade-in-up" style="animation-delay: 0.2s; animation-fill-mode: forwards;">
+            <p class="text-xl md:text-2xl leading-relaxed text-slate-300 first-letter:text-6xl first-letter:font-bold first-letter:text-brand-500 first-letter:mr-3 first-letter:float-left">
+                週末早晨，當你睜開眼，是在溫暖的被窩裡繼續滑著別人出國旅遊的動態，還是已經背起行囊，走在前往某個「熱門景點」的路上？身為一個現代人，我們似乎總有一種「必須往外跑」的集體焦慮與渴望。
+            </p>
+        </section>
+
+        <!-- Section 1: Classification -->
+        <section class="mb-32">
+            <div class="flex items-center gap-4 mb-10">
+                <span class="text-5xl font-black font-display text-slate-800">01</span>
+                <h2 class="text-3xl font-bold">為什麼我們總是想往外跑？</h2>
+            </div>
+            
+            <div class="glass-card p-8 md:p-12 mb-10">
+                <p class="text-lg text-slate-400 mb-8 leading-relaxed">
+                    所謂「旅遊景點」（Tourist Attractions），從社會學的角度來看，其實是一種具備「神祕魔力」的空間。它們能促使我們離開熟悉的常住地，心甘情願地付出時間與金錢。
+                </p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="p-6 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors">
+                        <h4 class="text-brand-500 font-bold mb-3 flex items-center gap-2">
+                            <span class="w-2 h-2 bg-brand-500 rounded-full"></span>大自然鬼斧神工派
+                        </h4>
+                        <p class="text-sm text-slate-300">像是國家公園或大堡礁。讓我們在壯闊的生態面貌前感到渺小，感嘆呼吸一口空氣都比城市貴。</p>
+                    </div>
+                    <div class="p-6 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors">
+                        <h4 class="text-brand-500 font-bold mb-3 flex items-center gap-2">
+                            <span class="w-2 h-2 bg-brand-500 rounded-full"></span>文青必修史蹟派
+                        </h4>
+                        <p class="text-sm text-slate-300">博物館、古蹟、宗教建築。穿越時空感受「歷史重量」，在世界遺產前思考人生的意義。</p>
+                    </div>
+                    <div class="p-6 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors">
+                        <h4 class="text-brand-500 font-bold mb-3 flex items-center gap-2">
+                            <span class="w-2 h-2 bg-brand-500 rounded-full"></span>人造狂歡樂園派
+                        </h4>
+                        <p class="text-sm text-slate-300">主題樂園或現代地標。在這裡實踐「錢錢變成喜歡的形狀」，用極度娛樂補償壓力。</p>
+                    </div>
+                    <div class="p-6 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors">
+                        <h4 class="text-brand-500 font-bold mb-3 flex items-center gap-2">
+                            <span class="w-2 h-2 bg-brand-500 rounded-full"></span>限定驚喜派
+                        </h4>
+                        <p class="text-sm text-slate-300">奧運會、極光或櫻花季。帶有「儀式感」的時效性活動，利用「錯過再等一年」的心理。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Timeline -->
+        <section class="mb-32 relative">
+            <div class="flex items-center gap-4 mb-12">
+                <span class="text-5xl font-black font-display text-slate-800">02</span>
+                <h2 class="text-3xl font-bold">穿越時空想當年</h2>
+            </div>
+
+            <div class="relative space-y-12 before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-brand-500 before:via-slate-700 before:to-transparent">
+                <!-- Step 1 -->
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border border-brand-500 bg-slate-900 text-brand-500 font-bold shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
+                        1
+                    </div>
+                    <div class="w-[calc(100%-4rem)] md:w-[45%] glass-card p-6">
+                        <time class="font-display font-bold text-brand-500">古代 - 朝聖與生存</time>
+                        <p class="text-slate-400 mt-2">旅行是靈魂或生存的博弈。景點多半具備聖性，是古代版的超級馬拉松。</p>
+                    </div>
+                </div>
+                <!-- Step 2 -->
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border border-brand-500 bg-slate-900 text-brand-500 font-bold shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
+                        2
+                    </div>
+                    <div class="w-[calc(100%-4rem)] md:w-[45%] glass-card p-6">
+                        <time class="font-display font-bold text-brand-500">17-18世紀 - 壯遊時代</time>
+                        <p class="text-slate-400 mt-2">貴族二代的成年禮，前往歐洲學習藝術，是「出國修學分」。</p>
+                    </div>
+                </div>
+                <!-- Step 3 -->
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border border-brand-500 bg-slate-900 text-brand-500 font-bold shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
+                        3
+                    </div>
+                    <div class="w-[calc(100%-4rem)] md:w-[45%] glass-card p-6">
+                        <time class="font-display font-bold text-brand-500">19-20世紀 - 大眾化轉身</time>
+                        <p class="text-slate-400 mt-2">蒸汽火車與噴射機讓旅遊普及，景點演變成了 IG 時代的「標準化商品」。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3 & 4: Bento Style Challenges -->
+        <section class="mb-32">
+            <div class="flex items-center gap-4 mb-12">
+                <span class="text-5xl font-black font-display text-slate-800">03</span>
+                <h2 class="text-3xl font-bold">當今觀點與狂歡代價</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="md:col-span-2 glass-card p-8 bg-gradient-to-br from-brand-900/20 to-transparent">
+                    <h3 class="text-xl font-bold mb-4 text-brand-400">永續觀光 (Sustainable Tourism)</h3>
+                    <p class="text-slate-400 leading-relaxed">
+                        現代知識份子更關注的是「永續」。不只是暴力開發，而是在環境保護、文化完整性與經濟收益間找尋平衡。如何不讓「旅遊承載力」超標，是負責任旅人的課題。
+                    </p>
+                </div>
+                <div class="glass-card p-8 flex flex-col justify-center text-center">
+                    <span class="text-4xl font-bold text-white mb-2">錢包支柱</span>
+                    <p class="text-slate-500 text-sm">景點是強心針，帶動外匯與就業</p>
+                </div>
+                <div class="glass-card p-8 bg-red-900/10 border-red-500/20">
+                    <h3 class="text-xl font-bold mb-4 text-red-400">過度觀光</h3>
+                    <p class="text-slate-400 text-sm">京都、威尼斯的哀愁：居民的日常成了恐怖片，紳士化讓老街坊含淚搬家。</p>
+                </div>
+                <div class="md:col-span-2 glass-card p-8 bg-orange-900/10 border-orange-500/20">
+                    <h3 class="text-xl font-bold mb-4 text-orange-400">文化迪士尼化</h3>
+                    <p class="text-slate-400">
+                        神聖祭典被簡化成無腦歌舞秀，原始精神在商品化中流失。大自然也正因為人類的「喜愛」而感到疲憊不堪。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Future -->
+        <section class="mb-32">
+            <div class="flex items-center gap-4 mb-12">
+                <span class="text-5xl font-black font-display text-slate-800">04</span>
+                <h2 class="text-3xl font-bold">未來預告：科幻旅遊</h2>
+            </div>
+            
+            <div class="space-y-8">
+                <div class="flex flex-col md:flex-row gap-8 items-center group">
+                    <div class="w-full md:w-1/3 aspect-video rounded-3xl bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-600 font-display font-bold text-3xl group-hover:text-brand-500 transition-colors">
+                        VR/AR
+                    </div>
+                    <div class="w-full md:w-2/3">
+                        <h4 class="text-xl font-bold text-white mb-2">虛擬與增強觀光</h4>
+                        <p class="text-slate-400">透過 3D 掃描創造「數位孿生」，不用排隊就能在金字塔「橫著走」，或讓歷史人物在 AR 中與你對話。</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row-reverse gap-8 items-center group">
+                    <div class="w-full md:w-1/3 aspect-video rounded-3xl bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-600 font-display font-bold text-3xl group-hover:text-green-500 transition-colors">
+                        REGEN
+                    </div>
+                    <div class="w-full md:w-2/3 md:text-right">
+                        <h4 class="text-xl font-bold text-white mb-2">再生旅遊 (Regenerative Tourism)</h4>
+                        <p class="text-slate-400">更進一步的環保觀：希望旅人離開時，景點的環境與社區狀態能比你來的時候「更好」。</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row gap-8 items-center group">
+                    <div class="w-full md:w-1/3 aspect-video rounded-3xl bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-600 font-display font-bold text-3xl group-hover:text-purple-500 transition-colors">
+                        AI
+                    </div>
+                    <div class="w-full md:w-2/3">
+                        <h4 class="text-xl font-bold text-white mb-2">AI 個人化行程</h4>
+                        <p class="text-slate-400">數位隨從精準規劃避開人潮的「怪癖」路線，讓旅遊不再是複製貼上的行程。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Conclusion -->
+        <footer class="mt-40">
+            <div class="glass-card p-12 text-center bg-gradient-to-t from-brand-900/30 to-transparent relative overflow-hidden">
+                <div class="relative z-10">
+                    <h2 class="text-3xl font-black mb-6">當個聰明的旅人，而不只是觀光客</h2>
+                    <p class="text-slate-300 max-w-2xl mx-auto leading-relaxed mb-8 italic">
+                        「最好的旅行，不是去了哪裡，而是那片風景在你的靈魂裡刻下了什麼樣的印記。」
+                    </p>
+                    <p class="text-slate-400 max-w-xl mx-auto text-sm">
+                        下次出發前，不妨思考：這趟旅程除了美照與戰利品，還留下了什麼？在享受風景的同時，也請帶走一點對當地的思考與愛護。
+                    </p>
+                </div>
+                <!-- Background decoration -->
+                <div class="absolute -top-24 -right-24 w-64 h-64 bg-brand-500/10 rounded-full blur-3xl"></div>
+                <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl"></div>
+            </div>
+        </footer>
+
+    </main>
+
+    <!-- Simple back to top -->
+    <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="fixed bottom-8 right-8 p-4 rounded-full bg-brand-600 text-white shadow-lg hover:bg-brand-500 transition-all transform hover:scale-110 active:scale-95 z-50">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+        </svg>
+    </button>
+
+    <script>
+        // Reveal elements on scroll
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-fade-in-up');
+                    entry.target.style.opacity = "1";
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section, .glass-card').forEach(el => {
+            el.style.opacity = "0";
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
