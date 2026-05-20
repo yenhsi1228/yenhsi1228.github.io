@@ -1,0 +1,657 @@
+import React, { useState, useEffect, useRef } from 'react';
+
+// ==========================================
+// 陪沈團真實美食數據庫 (Curated from Uploaded Transcripts)
+// ==========================================
+const FOOD_RESOURCES = [
+  {
+    id: 1,
+    name: "七股 紅蔥頭雞腿堡",
+    city: "台南",
+    area: "七股區",
+    priceRange: "平價",
+    category: "小吃",
+    rating: 5,
+    highlights: "料多到爆、蔥薑醬絕配、越式美乃滋、單車族最愛",
+    description: "在偏僻的七股開了四年的神級小店！老闆將海南雞飯風味的「蔥薑醬」加上越式風情的香甜美乃滋，搭配炸到香酥的雞腿排。傳統漢堡裡帶有蔥薑辛香，超級無敵好吃，是前端餐酒館等級的漢堡！",
+    quote: "「Unbelievable！你沒辦法想像你在北門區、七股，旁邊有一對阿公阿嬤，然後你吃著一個可以端上餐酒館的漢堡，超級無敵好吃！」— 沈",
+    fileSource: "七股必吃！台南人都嚇到的珠寶盒臭豆腐！！！"
+  },
+  {
+    id: 2,
+    name: "復興市場 153廚房 軟骨飯",
+    city: "台南",
+    area: "中西區",
+    priceRange: "平價",
+    category: "小吃",
+    rating: 5,
+    highlights: "滿口膠原蛋白、軟骨化開、完美酸甜配菜",
+    description: "隱身在台南宵夜復興市場裡。這款軟骨已經燉到如同「蒟蒻/牛筋」般的黏糊透明程度，油脂與膠質在口中瞬間化開，味道完全不會過鹹。旁邊配上酸甜脆口的薑豆與醃洋蔥，平衡感一絕！",
+    quote: "「滿口都是膠質耶！它軟骨已經變成牛筋膠膠的那種溫度了，配上薑豆，陽配柔美！」— 沈",
+    fileSource: "臺南夜間市場 神仙等級美食都在這"
+  },
+  {
+    id: 3,
+    name: "豆花綠豆王 冬季限定干貝湯圓",
+    city: "台南",
+    area: "中西區",
+    priceRange: "平價",
+    category: "甜點",
+    rating: 4.8,
+    highlights: "冬季限定、柱狀大湯圓、杏仁茶豆花超合拍",
+    description: "通常十月中後到十一月才開賣的隱藏版！湯圓不是圓的，而是帶有手作感的柱狀體（被笑稱很像大干貝）。口感超級嫩Q、完全不乾，搭配香氣爆炸的熱豆花。特別推薦將原本的糖水換成熱「杏仁茶」，混血兒風格更上層樓！",
+    quote: "「我朋友都叫它『干貝湯圓』，因為它遠看真的很像中大型的干貝。配上杏仁茶豆花，比杏仁豆腐還好吃，超有風格！」— 沈",
+    fileSource: "臺南隱藏市場美食"
+  },
+  {
+    id: 4,
+    name: "預點 米其林港式點心",
+    city: "台南",
+    area: "東區",
+    priceRange: "中價位",
+    category: "異國料理",
+    rating: 5,
+    highlights: "米其林推薦、大蝦內餡、花生馬來糕、神級麻醬腸粉",
+    description: "入選米其林必比登的極致港點！吹彈可破的外皮包覆著飽滿大蝦，原汁原味鮮美。叉燒包皮彈不黏牙、蔥薑雞包仔新穎美味。特別是「馬來糕」鬆軟如雲朵、內涵深厚；而其特製「麻醬腸粉」濃郁殺開，別處絕對吃不到！",
+    quote: "「它的食物是米其林，但它的價錢是路邊攤！馬來糕就像穿吊嘎去銀行卻要領五千萬出來的阿伯，高手在民間！」— 沈",
+    fileSource: "一個月只開三天/40分鐘完售麵包"
+  },
+  {
+    id: 5,
+    name: "石食 酸種麵包 (櫛瓜培根可頌)",
+    city: "台南",
+    area: "東區",
+    priceRange: "中價位",
+    category: "甜點",
+    rating: 4.5,
+    highlights: "酸種酵母、櫛瓜培根翻轉可頌、紮實蝴蝶酥底",
+    description: "一個禮拜只開幾天、常常出國進修的精緻酸種麵包店。麵茶酸種大得跟枕頭一樣！可頌不走傳統空氣蓬鬆流派，而是每一層都非常紮實有嚼勁。特別推薦「櫛瓜培根翻轉可頌」，鹹香微酸，吃起來飽滿得像「超厚菜包」！",
+    quote: "「這顆櫛瓜培根咬下去，吃起來非常像很厚很厚的菜包！我好喜歡！」— 沈",
+    fileSource: "一個月只開三天/40分鐘完售麵包"
+  },
+  {
+    id: 6,
+    name: "彰化 蔥油條",
+    city: "彰化",
+    area: "彰化市",
+    priceRange: "平價",
+    category: "小吃",
+    rating: 4.9,
+    highlights: "一早吃棒棒、外酥內Q、椒鹽香氣不油膩",
+    description: "彰化清晨最醒腦的棒狀炸物！外表灑滿椒鹽粉，剛起鍋熱騰騰的時候香氣直衝。咬下去的口感極度驚喜，不像油條那般空洞酥脆，反而帶有極強的軟嫩Q彈嚼勁，類似鹹甜圈（甜甜圈）的紮實麵團香！",
+    quote: "「一早吃棒棒真的好棒棒！它最屌的地方是Q彈耶，吃起來不會油，一個人可以吃二到三條！」— 沈",
+    fileSource: "讓我流淚的彰化 一早吃棒棒真的好棒棒"
+  },
+  {
+    id: 7,
+    name: "蘇炸物 炸金針菇 & 櫛瓜",
+    city: "彰化",
+    area: "彰化市",
+    priceRange: "平價",
+    category: "小吃",
+    rating: 4.8,
+    highlights: "乾燥蔬菜感、無油耗味、極致乾淨油炸、高質感黑白胡椒",
+    description: "彰化市區上午十一點就開的高質感炸物攤。整間店白淨優雅、一塵不染。老闆炸功極強，一片一片細心在油鍋甩油，金針菇炸完完全沒有可怕的菇腥味，反而極像香脆的「日本居酒屋天婦羅/乾燥蔬菜乾」，配上精細的黑白雙重胡椒，美味到不行！",
+    quote: "「我沒有在路邊攤炸物吃過這麼好吃的金針菇過！油甩得很乾，真的很像乾燥蔬菜，厲害了不起！」— 沈",
+    fileSource: "讓我流淚的彰化 一早吃棒棒真的好棒棒"
+  },
+  {
+    id: 8,
+    name: "嘉義 真正木瓜牛奶冰沙",
+    city: "嘉義",
+    area: "嘉義市",
+    priceRange: "平價",
+    category: "飲料",
+    rating: 4.7,
+    highlights: "真正木瓜切片、超細緻冰沙、奶香極濃",
+    description: "一開門就引來「食物獵人」大排長龍！別於一般用碎冰或果汁機打的木瓜牛奶，這家店是將真正的熟成木瓜製成極度細緻、無顆粒感的「木瓜冰沙」再加入大量鮮乳。口感綿密滑順，完全沒有木瓜過熟的可怕草腥刮舌感！",
+    quote: "「它的冰沙做得非常非常細，你一喝進去就是木瓜口味的極細冰沙，牛奶很多很滑順，好喝！」— 沈",
+    fileSource: "嘉義神秘小客車裡的美食 雞肉飯名店排到想放棄"
+  },
+  {
+    id: 9,
+    name: "羅山 碳火炒鱔魚意麵",
+    city: "嘉義",
+    area: "嘉義市",
+    priceRange: "平價",
+    category: "小吃",
+    rating: 4.9,
+    highlights: "阿伯大碳火、鑊氣爆棚、水煮青蛙湯九層塔神湯",
+    description: "走進去就看見阿伯正用熊熊的「純碳火與黑鐵大鍋」猛力翻炒。鑊氣（碳焦香）極強，黃油麵完美吸收了酸甜焦香的炭火精華，跟家裡平底鍋炒的完全是不同層次！推薦大膽搭配一碗放了巨量九層塔、蒜頭與薑片熬煮的「清湯水煮青蛙（田雞）」，肉質比雞肉還紮實彈牙！",
+    quote: "「這炒麵是真的有吃到碳味的！它是認真有炭的那種，碳香非常特別！還有它的青蛙湯，肉質很紮實，好喝！」— 辣妹 & 沈",
+    fileSource: "嘉義神秘小客車裡的美食 雞肉飯名店排到想放棄"
+  },
+  {
+    id: 10,
+    name: "愛生小館 鹹蛋黃松阪豬便當",
+    city: "新竹",
+    area: "東區",
+    priceRange: "高價位",
+    category: "便當",
+    rating: 4.8,
+    highlights: "餐酒館便當、金沙松阪豬、精緻紫薯濃湯、會議體面首選",
+    description: "這款要價340元的新竹高級餐盒，實際上是當地知名餐酒館精心製作。大片金沙（鹹蛋黃）炒香並沾裹在脆彈的松阪豬上，搭配皎白筍、杏鮑菇、精緻的法式醃菜，飯體粒粒分明，還附一碗高質感、帶有些微地瓜甜感的「紫薯濃湯」。是讓主管在會議上大長面子、完全不油膩的高級救星！",
+    quote: "「鹹蛋黃炒松阪豬味道非常對，紫薯濃湯很濃郁，喝下去我覺得我是一個有自信的人！如果我是主管，過專案我就訂這家！」— 沈",
+    fileSource: "新竹要價1000元的便當長怎麼樣！"
+  },
+  {
+    id: 11,
+    name: "新竹 帝王級 1000元無菜單餐盒",
+    city: "新竹",
+    area: "東區",
+    priceRange: "超高價位",
+    category: "便當",
+    rating: 3.5,
+    highlights: "新竹傳奇、一千元便當、松阪豬/烤干貝/青蒸鮭魚/可樂餅三層組合",
+    description: "專為竹科大老闆開會、打高爾夫球設計的千元無菜單三層便當。包含一盒精緻水果、一盒蓋著炙燒松阪豬的主食、以及一盒精裝配菜（焗烤干貝、鮭魚、可樂餅）。不過沈評估其性價比偏低，配菜與主食略顯拼湊、鮭魚缺乏油煎感、干貝焗烤略顯老氣，但排場確實是體面第一名。",
+    quote: "「中午休息時間要是大老闆買這個給我吃，我下午開會脾氣會超暴躁！亮點居然是打卡送的咖哩馬鈴薯可樂餅！」— 沈",
+    fileSource: "新竹要價1000元的便當長怎麼樣！"
+  },
+  {
+    id: 12,
+    name: "初中小路 3480元海陸火鍋個人套餐",
+    city: "台北",
+    area: "大安區",
+    priceRange: "超高價位",
+    category: "火鍋",
+    rating: 5,
+    highlights: "極奢天花板、和牛松露、鮮甜大龍蝦、超飽滿松葉蟹、無花果紅烏龍蛋糕",
+    description: "台北頂級奢華火鍋！前菜提供極佳甜酸度的干貝起司蝦丸，肉品主打高質感和牛包覆厚重黑松露，入口即融。龍蝦肉質彈牙飽滿（Fit級緊實度！），松葉蟹鮮甜，巨無霸牡蠣無腥味。最驚豔的是餐後老闆手作的「無花果紅烏龍蛋糕」，茶香高雅、完全不甜膩，整體食材等級無可挑剔！",
+    quote: "「吃完這個牛肉松露、緊實龍蝦和這個無花果蛋糕，我覺得我根本不需要男朋友！我只需要這盤和牛！」— 沈",
+    fileSource: "最強火鍋對決！！$280火烤兩吃 吃到飽VS$3480海陸個人套餐"
+  },
+  {
+    id: 13,
+    name: "大胃王 火烤兩吃 280元吃到飽",
+    city: "台北",
+    area: "信義區",
+    priceRange: "平價",
+    category: "火鍋",
+    rating: 4.6,
+    highlights: "CP值神店、老饕秘炒沙茶羊肉、奶油培根起司拉麵、阿公級人情味",
+    description: "台北信義區不可思議的280元火烤兩吃！雖然湯頭清淡如水，但老饕吃法是到自助區夾滿大堆空心菜、羊肉、大匙沙茶在鐵盤上爆炒，香辣無敵！或是丟入一大塊奶油爆炒培根與黃金泡麵、淋上滿滿起司，美味直接回本！老闆與店內常客大叔極為熱情，極富人情味。",
+    quote: "「280元在外面能吃到什麼空虛的東西？但來這裡，你自己當大廚，炒沙茶空心菜羊肉，香到直接飛天！」— 沈",
+    fileSource: "最強火鍋對決！！$280火烤兩吃 吃到飽VS$3480海陸個人套餐"
+  },
+  {
+    id: 14,
+    name: "千咖啡 深夜手搖與手作優格",
+    city: "台南",
+    area: "中西區",
+    priceRange: "中價位",
+    category: "飲料",
+    rating: 4.9,
+    highlights: "不定期深夜營業、自熬新鮮果醬、魔性香菜奶綠、植物優感草莓優格",
+    description: "台南最幻妙、開到凌晨一兩點的深夜溫暖港灣。店內植栽圍繞，老闆秉持良心，所有飲品使用的「水果果醬」皆是當天手工熬煮數小時而成。特別主打「草莓牛奶/優格」喝得到真實的草莓顆粒感；更有大膽創新的「香菜奶綠」，使用乾燥香菜葉，喝起來香甜優雅、極像抹茶，毫無化學怪味！",
+    quote: "「喝下去之後覺得自己很像林志玲！深夜在台南能有這麼一盞溫暖的燈，點一杯草莓優格真的超幸福！」— 沈",
+    fileSource: "必訪！ 臺南神秘飲料"
+  },
+  {
+    id: 15,
+    name: "福岡 夫婦明太子法國麵包",
+    city: "日本",
+    area: "福岡博多",
+    priceRange: "中價位",
+    category: "甜點",
+    rating: 5,
+    highlights: "出爐秒殺、超濃郁炙燒明太子、酥脆法棍",
+    description: "福岡博多當地連排隊名人都一致推崇的麵包名店！剛出爐時外皮金黃焦脆，老闆不手軟地將大量濃郁、帶有一點點微辣感與鹹鮮的「熟成明太子醬」完美塗抹在麵包夾層中並經過精準炙燒。油脂徹底浸透法棍麵包體，好吃到令人手舞足蹈！",
+    quote: "「明太子醬直接在口中炸裂開來！它比我們之前吃的更濃郁、更兇！熱熱吃，快樂到手足無措！」— 沈",
+    fileSource: "福岡美食 超隱藏版碳烤雞水炊雞"
+  },
+  {
+    id: 16,
+    name: "首爾弘大 藍絲帶草莓蛋糕",
+    city: "韓國",
+    area: "首爾弘大",
+    priceRange: "中價位",
+    category: "甜點",
+    rating: 4.9,
+    highlights: "藍絲帶推薦、雲朵鮮奶油、大顆酸甜草莓、完全不膩口",
+    description: "弘大校友S熱推、門口貼滿十多個藍絲帶認證的草莓神店！鮮奶油蓬鬆輕盈得像「雲朵」，一含進嘴裡會把嘴巴撐開一般的療癒。草莓選用帶有天然酸度的大顆鮮果，完美中和了戚風蛋糕和鮮奶油的甜感，一個人吃完整顆都沒有罪惡感！",
+    quote: "「在覺得甜膩的瞬間，草莓突然跑出來說：『沒有啦，我在這裡，你是不是在找我？』酸甜融合得非常完美！」— 沈",
+    fileSource: "首爾弘大保證不踩雷餐廳推薦！"
+  }
+];
+
+export default function App() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCity, setSelectedCity] = useState("全部");
+  const [selectedCategory, setSelectedCategory] = useState("全部");
+  const [selectedPrice, setSelectedPrice] = useState("全部");
+  
+  // Chat Simulator State
+  const [chatInput, setChatInput] = useState("");
+  const [chatHistory, setChatHistory] = useState([
+    {
+      sender: "bot",
+      text: "哈囉！我是陪沈團的 AI 小助手！想要找台南超綿密軟骨飯、嘉義鑊氣炒鱔魚、新竹1000元便當，還是台北初中小路的極奢和牛火鍋？快在下面問我，我會用「最真實、最大肥豬級、香到起死」的魔性語調回答你喔！"
+    }
+  ]);
+  
+  const chatEndRef = useRef(null);
+
+  // Auto Scroll Chat
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [chatHistory]);
+
+  // Cities and Categories
+  const cities = ["全部", "台南", "嘉義", "彰化", "台北", "新竹", "日本", "韓國"];
+  const categories = ["全部", "小吃", "甜點", "飲料", "便當", "火鍋", "異國料理"];
+  const prices = ["全部", "平價", "中價位", "高價位", "超高價位"];
+
+  // Filter Logic
+  const filteredResources = FOOD_RESOURCES.filter(item => {
+    const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          item.highlights.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCity = selectedCity === "全部" || item.city === selectedCity;
+    const matchesCategory = selectedCategory === "全部" || item.category === selectedCategory;
+    const matchesPrice = selectedPrice === "全部" || item.priceRange === selectedPrice;
+    return matchesSearch && matchesCity && matchesCategory && matchesPrice;
+  });
+
+  // Simulated AI Chatbot Response Generator (Based strictly on document text)
+  const handleSendMessage = (textToSend) => {
+    const message = textToSend || chatInput;
+    if (!message.trim()) return;
+
+    // Add user message
+    const newHistory = [...chatHistory, { sender: "user", text: message }];
+    setChatHistory(newHistory);
+    if (!textToSend) setChatInput("");
+
+    // Simple rule-based simulated intelligence mimicking 陪沈團 tone
+    setTimeout(() => {
+      let reply = "";
+      const lower = message.toLowerCase();
+
+      if (lower.includes("台南") || lower.includes("七股") || lower.includes("復興市場")) {
+        reply = `「哎唷！來台南你就是來到原味的故鄉！必須大推【七股紅蔥頭雞腿堡】，它是用海南雞飯的蔥薑醬跟越南美乃滋做結合，端上餐酒館都超級合理！還有復興市場的【153廚房軟骨飯】，那個軟骨已經燉到跟蒟蒻、牛筋一樣黏，滿口膠質直接柔美融合！如果是冬季，【豆花綠豆王】的干貝湯圓配上杏仁茶更是神級混血風，吃完整個直接飛上天！」`;
+      } else if (lower.includes("新竹") || lower.includes("1000") || lower.includes("一千") || lower.includes("便當")) {
+        reply = `「新竹的豪宅跟園區老闆真的過很好耶！【愛生小館的鹹蛋黃松阪豬便當】(340元) 真的精緻到爆，金沙鋪得滿滿的，還配一碗超優雅的紫薯濃湯！至於那款【1000元的無菜單三層便當】，雖然有焗烤干貝、鮭魚，但鮭魚煎得太普通了啦，我大老闆開會吃完下午脾氣會超暴躁！老實說亮點居然是打卡送的咖哩可樂餅，真的是料超多無話可說！」`;
+      } else if (lower.includes("火鍋") || lower.includes("吃到飽") || lower.includes("龍蝦")) {
+        reply = `「台北火鍋對決超極端！如果口袋比較緊，必須去吃280元火烤兩吃的【大胃王】，夾滿空心菜跟羊肉爆炒沙茶，再拿黃金泡麵炒起司奶油，高CP值到哭！如果想揮霍，就去吃3480元的【初中小路】，它的龍蝦肌肉線條超級緊實(Fit！)，和牛包黑松露直接化開，最後的老闆手作無花果紅烏龍蛋糕完全不甜，精緻度驚人，吃完直接宣告單身萬歲！」`;
+      } else if (lower.includes("彰化") || lower.includes("蔥油條") || lower.includes("炸物")) {
+        reply = `「彰化真的超厲害！一早吃棒棒真的好棒棒！【蔥油條】熱騰騰起魚時外脆內軟，口感像甜甜圈一樣Q，完全不油！還有【蘇炸物】，老闆炸金針菇炸到像乾燥蔬菜，乾淨、高雅、毫無菇味，簡直是日本天婦羅等級，厲害了不起！」`;
+      } else if (lower.includes("嘉義") || lower.includes("木瓜") || lower.includes("鱔魚")) {
+        reply = `「嘉義不只有雞肉飯！【真正木瓜牛奶冰沙】一開門就排爆，冰沙磨到極細，奶香濃郁超清爽！還有羅山那家，阿伯大炭火猛炒的【炒鱔魚意麵】，炭焦香氣強到靈魂顫抖，再點一碗九層塔蒜頭水煮青蛙湯，肉質緊實像健身雞肉，大推！」`;
+      } else if (lower.includes("甜點") || lower.includes("麵包") || lower.includes("草莓") || lower.includes("明太子")) {
+        reply = `「麵包大軍來了！【福岡夫婦明太子法國麵包】的明太子醬油脂直接炙燒，濃郁到手足無措！還有首爾弘大的【藍絲帶草莓蛋糕】，奶油蓬鬆像雲朵，草莓酸甜中和得恰到好處，完全不膩，一個人吃整顆超幸福！台南的話，港式【預點】的馬來糕跟【石食】的櫛瓜培根翻轉可頌（像超厚菜包）也都絕不能錯過！」`;
+      } else if (lower.includes("飲料") || lower.includes("手搖") || lower.includes("香菜")) {
+        reply = `「台南的手搖神話！要大推深夜營業的【千咖啡】，草莓優格果醬都是當天現熬，甚至有驚人的【香菜奶綠】，喝起來像香甜抹茶，超級療癒！另外【來日方茶】的 400抹烏龍拿鐵 苦甜焦糖泡沫極綿密，杯子還是超時髦的銀色，在台北可以直接賣120元！」`;
+      } else {
+        reply = `「哈囉家人們！你問的這個我手邊的 Google 地圖也有收藏喔！不管是平價還是貴婦級美食，陪沈團都幫你把關好了。有沒有特別想知道哪個城市（台南、嘉義、彰化、新竹、台北）的排隊傳奇？快問我，我們一起吃飽飽不變胖！」`;
+      }
+
+      setChatHistory(prev => [...prev, { sender: "bot", text: reply }]);
+    }, 1000);
+  };
+
+  return (
+    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 text-neutral-800 dark:text-neutral-100 font-sans transition-colors duration-200">
+      
+      {/* Premium Header */}
+      <header className="sticky top-0 z-40 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md border-b border-neutral-200 dark:border-neutral-800 transition-colors">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            {/* Custom SVG Logo */}
+            <svg className="w-8 h-8 text-amber-600 dark:text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+            <span className="text-xl font-bold tracking-wider bg-gradient-to-r from-amber-600 to-rose-500 bg-clip-text text-transparent">
+              陪沈團美食探索指南
+            </span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <span className="text-xs bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-400 font-semibold px-2.5 py-1 rounded-full">
+              NotebookLM 知識庫聯名版
+            </span>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Banner Area */}
+      <section className="relative overflow-hidden py-12 sm:py-16 bg-gradient-to-b from-amber-500/10 via-rose-500/5 to-transparent">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+          <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-neutral-900 dark:text-white">
+            最完整的美食指南！
+          </h1>
+          <p className="mt-4 text-lg text-neutral-600 dark:text-neutral-400 max-w-2xl mx-auto">
+            超實用美食開箱資源庫與 AI 對話系統，完全收錄陪沈團六週年至今橫跨台南、嘉義、彰化、新竹、台北、福岡、首爾等地的真實探店語音記錄！
+          </p>
+          <div className="mt-6 flex flex-wrap gap-2 justify-center">
+            <span className="text-xs px-3 py-1.5 bg-white dark:bg-neutral-800 rounded-lg shadow-sm border border-neutral-200 dark:border-neutral-700">🍿 過年零食特輯</span>
+            <span className="text-xs px-3 py-1.5 bg-white dark:bg-neutral-800 rounded-lg shadow-sm border border-neutral-200 dark:border-neutral-700">🍲 280元吃到飽火鍋對決</span>
+            <span className="text-xs px-3 py-1.5 bg-white dark:bg-neutral-800 rounded-lg shadow-sm border border-neutral-200 dark:border-neutral-700">🍱 新竹1000元便當爭霸</span>
+            <span className="text-xs px-3 py-1.5 bg-white dark:bg-neutral-800 rounded-lg shadow-sm border border-neutral-200 dark:border-neutral-700">🥐 弘大藍絲帶草莓蛋糕</span>
+          </div>
+        </div>
+      </section>
+
+      {/* Grid Layout: Main Interface */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24 grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        {/* Left Column (8 cols): Filters & Resource Library */}
+        <div className="lg:col-span-8 space-y-6">
+          
+          {/* Search and Filters Block */}
+          <div className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-sm border border-neutral-200/60 dark:border-neutral-800 transition-colors">
+            <div className="space-y-4">
+              {/* Search input */}
+              <div className="relative">
+                <input 
+                  type="text"
+                  placeholder="搜尋好吃的、關鍵字、城市、沈的評論..."
+                  className="w-full pl-10 pr-4 py-3 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <svg className="w-5 h-5 text-neutral-400 absolute left-3 top-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                {searchTerm && (
+                  <button 
+                    onClick={() => setSearchTerm("")}
+                    className="absolute right-3 top-3.5 text-xs text-rose-500 hover:underline"
+                  >
+                    清除
+                  </button>
+                )}
+              </div>
+
+              {/* Advanced Filter Buttons */}
+              <div className="space-y-3 pt-2">
+                {/* City select */}
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 w-12">城市：</span>
+                  {cities.map(city => (
+                    <button
+                      key={city}
+                      onClick={() => setSelectedCity(city)}
+                      className={`text-xs px-3 py-1 rounded-full transition ${
+                        selectedCity === city 
+                          ? 'bg-amber-600 text-white font-medium' 
+                          : 'bg-neutral-100 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-600'
+                      }`}
+                    >
+                      {city}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Category select */}
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 w-12">種類：</span>
+                  {categories.map(category => (
+                    <button
+                      key={category}
+                      onClick={() => setSelectedCategory(category)}
+                      className={`text-xs px-3 py-1 rounded-full transition ${
+                        selectedCategory === category 
+                          ? 'bg-amber-600 text-white font-medium' 
+                          : 'bg-neutral-100 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-600'
+                      }`}
+                    >
+                      {category}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Price select */}
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 w-12">預算：</span>
+                  {prices.map(price => (
+                    <button
+                      key={price}
+                      onClick={() => setSelectedPrice(price)}
+                      className={`text-xs px-3 py-1 rounded-full transition ${
+                        selectedPrice === price 
+                          ? 'bg-amber-600 text-white font-medium' 
+                          : 'bg-neutral-100 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-600'
+                      }`}
+                    >
+                      {price}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Results Summary & Grid */}
+          <div className="flex justify-between items-center px-2">
+            <h2 className="text-lg font-bold">
+              神仙美食資源庫 ({filteredResources.length} 家)
+            </h2>
+            <p className="text-xs text-neutral-500 dark:text-neutral-400">
+              *所有數據皆真實抽取自隨附 NotebookLM 逐字稿*
+            </p>
+          </div>
+
+          {filteredResources.length === 0 ? (
+            <div className="bg-white dark:bg-neutral-800 rounded-2xl p-12 text-center border border-neutral-200 dark:border-neutral-800">
+              <svg className="w-12 h-12 text-neutral-400 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <h3 className="text-lg font-bold mb-1">找不到相關美食！</h3>
+              <p className="text-sm text-neutral-500 dark:text-neutral-400">請嘗試更改搜尋條件或使用其他篩選按鈕。</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {filteredResources.map(item => (
+                <div 
+                  key={item.id}
+                  className="bg-white dark:bg-neutral-800 rounded-2xl overflow-hidden border border-neutral-200/75 dark:border-neutral-800 shadow-sm hover:shadow-md transition-all group flex flex-col justify-between"
+                >
+                  <div className="p-6 space-y-4">
+                    {/* Top tags */}
+                    <div className="flex justify-between items-start">
+                      <span className="text-xs font-semibold bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300 px-2.5 py-1 rounded-lg">
+                        {item.city} • {item.area}
+                      </span>
+                      <div className="flex space-x-1">
+                        <span className="text-[10px] px-2 py-0.5 bg-neutral-100 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-300 rounded">
+                          {item.category}
+                        </span>
+                        <span className="text-[10px] px-2 py-0.5 bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-300 rounded">
+                          {item.priceRange}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Title */}
+                    <div>
+                      <h3 className="text-lg font-bold group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                        {item.name}
+                      </h3>
+                      <p className="text-xs text-amber-500 font-medium mt-1">
+                        ✨ 特色：{item.highlights}
+                      </p>
+                    </div>
+
+                    {/* Content */}
+                    <p className="text-sm text-neutral-600 dark:text-neutral-300 leading-relaxed">
+                      {item.description}
+                    </p>
+
+                    {/* Authentic Transcript Quote */}
+                    <div className="bg-rose-50/50 dark:bg-rose-950/20 p-3.5 rounded-xl border-l-4 border-rose-500 text-xs italic text-rose-700 dark:text-rose-300 leading-relaxed">
+                      {item.quote}
+                    </div>
+                  </div>
+
+                  {/* Card Footer */}
+                  <div className="bg-neutral-50 dark:bg-neutral-800/50 px-6 py-3 border-t border-neutral-100 dark:border-neutral-800 flex items-center justify-between text-xs text-neutral-500">
+                    <span>來源稿件: {item.fileSource.substring(0, 15)}...</span>
+                    <button 
+                      onClick={() => handleSendMessage(`推薦一下：${item.name}`)}
+                      className="text-amber-600 dark:text-amber-400 font-semibold hover:underline flex items-center space-x-1"
+                    >
+                      <span>對話提問</span>
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* FAQ Section */}
+          <div className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-sm border border-neutral-200/60 dark:border-neutral-800 transition-colors pt-8">
+            <h3 className="text-xl font-bold mb-6 flex items-center space-x-2">
+              <span className="p-1 bg-rose-100 text-rose-600 dark:bg-rose-900/40 dark:text-rose-400 rounded-lg">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </span>
+              <span>常見問答 FAQ (知識庫摘要)</span>
+            </h3>
+            <div className="space-y-4">
+              <div className="border-b border-neutral-100 dark:border-neutral-700 pb-4">
+                <h4 className="font-bold text-sm text-neutral-900 dark:text-neutral-100 mb-1">Q: 台南人真的不屑排隊嗎？</h4>
+                <p className="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+                  陪沈團實地考察證實「都市傳說一半一半」，台南有些神級店如「媽媽油飯」（炒米粉二姐）依然是台南人在排隊！而「土魠魚羹」更是連老台南計程車司機都說過年後被爆完都是年輕人在排。
+                </p>
+              </div>
+              <div className="border-b border-neutral-100 dark:border-neutral-700 pb-4">
+                <h4 className="font-bold text-sm text-neutral-900 dark:text-neutral-100 mb-1">Q: 彰化特色涼圓跟北部有什麼差別？</h4>
+                <p className="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+                  彰化的涼圓是「冰冷」吃的肉圓，口感極度像從冰箱拿出來的冰涼霸丸，皮帶一點水感，搭配不厚重的清爽蒜味醬汁。沈提醒：「彰化小時候吃過它會延續愛、有被愛的感覺，外地人第一次吃會覺得非常新潮！」
+                </p>
+              </div>
+              <div className="pb-2">
+                <h4 className="font-bold text-sm text-neutral-900 dark:text-neutral-100 mb-1">Q: 陪沈團認證最怕的「香菜地雷」到底在哪？</h4>
+                <p className="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+                  在多款超商與點心開箱中，沈跟凡都對香菜抱持高度敬畏，尤其是「香菜梗」。但三重「無名刈包」因為皮很厚把油脂跟香菜梗包裹在一起，反而降低了香菜味；台南深夜「千咖啡的香菜奶綠」更是利用乾燥香菜做出如同抹茶般的美味，大受好評！
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        {/* Right Column (4 cols): NotebookLM Simulated Chatbot */}
+        <div className="lg:col-span-4 lg:sticky lg:top-24 h-[calc(100vh-8rem)] flex flex-col justify-between">
+          
+          <div className="bg-white dark:bg-neutral-800 rounded-2xl shadow-md border border-neutral-200 dark:border-neutral-700 overflow-hidden flex flex-col h-full">
+            
+            {/* Chatbot Header */}
+            <div className="bg-gradient-to-r from-amber-600 to-rose-500 p-4 text-white flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <div className="bg-white/20 p-1.5 rounded-lg">
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="font-bold text-sm">與 NotebookLM 美食文件對話</h3>
+                  <p className="text-[10px] text-white/80">AI 語氣模擬：「沈」的魔性頻道模式</p>
+                </div>
+              </div>
+              <div className="h-2.5 w-2.5 bg-green-400 rounded-full animate-pulse" title="Ready to Chat" />
+            </div>
+
+            {/* Quick Suggestion Chips */}
+            <div className="p-3 bg-neutral-50 dark:bg-neutral-900 border-b border-neutral-100 dark:border-neutral-800 flex flex-wrap gap-1.5">
+              <span className="text-[10px] text-neutral-500 block w-full mb-1">大家都在問：</span>
+              <button 
+                onClick={() => handleSendMessage("台南有什麼排隊神仙美味？")}
+                className="text-[10px] px-2 py-1 bg-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 rounded border hover:bg-neutral-100 transition"
+              >
+                台南排隊美食 🍜
+              </button>
+              <button 
+                onClick={() => handleSendMessage("新竹一千塊便當長怎樣？值不值得買？")}
+                className="text-[10px] px-2 py-1 bg-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 rounded border hover:bg-neutral-100 transition"
+              >
+                新竹1000元便當 🍱
+              </button>
+              <button 
+                onClick={() => handleSendMessage("台北3480元奢華火鍋跟280元吃到飽")}
+                className="text-[10px] px-2 py-1 bg-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 rounded border hover:bg-neutral-100 transition"
+              >
+                神仙火鍋對決 🍲
+              </button>
+              <button 
+                onClick={() => handleSendMessage("彰化一早吃棒棒是指什麼小吃？")}
+                className="text-[10px] px-2 py-1 bg-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 rounded border hover:bg-neutral-100 transition"
+              >
+                彰化清晨棒棒 🥖
+              </button>
+            </div>
+
+            {/* Chat Messages */}
+            <div className="flex-1 p-4 overflow-y-auto space-y-4 text-xs dark:bg-neutral-900/40">
+              {chatHistory.map((chat, idx) => (
+                <div 
+                  key={idx}
+                  className={`flex ${chat.sender === "user" ? "justify-end" : "justify-start"}`}
+                >
+                  <div className={`max-w-[85%] rounded-2xl p-3.5 leading-relaxed shadow-sm ${
+                    chat.sender === "user" 
+                      ? "bg-amber-600 text-white rounded-tr-none" 
+                      : "bg-neutral-100 dark:bg-neutral-800 text-neutral-800 dark:text-neutral-100 rounded-tl-none border border-neutral-200/50 dark:border-neutral-700"
+                  }`}>
+                    {chat.sender === "bot" && (
+                      <span className="font-bold block text-[10px] text-rose-500 dark:text-rose-400 mb-1 tracking-wider uppercase">
+                        📢 陪沈團 AI 大肥豬
+                      </span>
+                    )}
+                    {chat.text}
+                  </div>
+                </div>
+              ))}
+              <div ref={chatEndRef} />
+            </div>
+
+            {/* Chat Input */}
+            <form 
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSendMessage();
+              }}
+              className="p-3 bg-neutral-50 dark:bg-neutral-800 border-t border-neutral-200 dark:border-neutral-700 flex space-x-2"
+            >
+              <input 
+                type="text"
+                placeholder="輸入美食問題，向陪沈團提問..."
+                className="flex-1 px-3 py-2 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-xl focus:outline-none focus:ring-1 focus:ring-amber-500 text-xs text-neutral-800 dark:text-neutral-100"
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+              />
+              <button 
+                type="submit"
+                className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-xl transition text-xs font-semibold"
+              >
+                送出
+              </button>
+            </form>
+
+          </div>
+
+        </div>
+
+      </main>
+
+      {/* Modern Premium Footer */}
+      <footer className="bg-white dark:bg-neutral-950 border-t border-neutral-200 dark:border-neutral-900 py-12 transition-colors">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+          <div className="flex items-center space-x-2">
+            <span className="text-sm font-bold tracking-wider bg-gradient-to-r from-amber-600 to-rose-500 bg-clip-text text-transparent">
+              陪沈團美食探索指南
+            </span>
+            <span className="text-xs text-neutral-400">© 2026</span>
+          </div>
+          <p className="text-xs text-neutral-400 text-center md:text-right max-w-md">
+            本指南利用先進的前端 React 架構，精煉處理「陪沈團」各大名店轉錄資訊，打造專屬消費者的最佳響應式搜尋與探店夥伴。
+          </p>
+        </div>
+      </footer>
+
+    </div>
+  );
+}
